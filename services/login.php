@@ -8,12 +8,13 @@ if($data->usuario == "" || $data->pass==""){
     $resArray = $_SESSION; 
 }else {
     if($data->usuario=="coby" && $data->pass="root"){
-        $_SESSION['estado'] = "OK";    
+        $_SESSION['estado'] = "OK";   
+         $resArray = $_SESSION; 
     } else {
         $_SESSION['estado'] = "ERROR: USUARIO INVALIDO";    
+         $resArray = $_SESSION; 
+        session_destroy();
     }
-    $resArray = $_SESSION; 
-        
 }
 
 echo json_encode($resArray);
