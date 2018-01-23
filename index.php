@@ -1,3 +1,10 @@
+<?php
+session_start(); 
+if(isset($_SESSION['usuario']))
+{
+    header("location: control");
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -50,10 +57,12 @@
                             function(responseText, status){
                                 try{
                                     if(status == "success"){
+                                        console.log(responseText);
                                         res = JSON.parse(responseText);
                                         if(res.estado=="OK"){
-                                            console.warn("Login Success!")
-                                            window.location.reload();                                             
+                                            console.warn("Login Success!");
+                                            alert("Bienvenido");
+                                            window.location.href="index.php";                                    
                                         }else {
                                         alert(res.estado);
                                         console.error("Status: " + res.estado);
