@@ -27,5 +27,26 @@ class Pelicula {
         }
         return $R; 
     }
+    
+    function consulta($id){
+        $R['estado']= "OK"; 
+        try {
+            $conn = new PDO('mysql:host='.$this->host.';dbname='.$this->db,$this->user, $this->pass);
+            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            if($id=='0')
+                $sql=$conn->query('SELECT * FROM peliculas');
+            else {
+                $sql = $conn->prepare('SELECT * FROM peliculas WHERE idpeliculas=:id');
+                $sql->execute(array('id'=>$id));
+            }
+            $R['filas'] = $sql->rowCount(); 
+            if($R['filas']>0)
+                $R['datos'] = $sql->fetchAll(); 
+            $conn = null; 
+        }catch(PDOException $e){
+            $R['estado'] = "Error: " . $e->getMessage(); 
+        }
+        return $R; 
+    }
 }
 ?>

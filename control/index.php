@@ -37,7 +37,37 @@ if(isset($_GET['salir'])){
      </fieldset>
  </form>
  
- <iframe name="peliculaFrame"></iframe>
+ <iframe name="peliculaFrame" style="display:none"> </iframe>
+     <h4>Lista de peliculas</h4>
+     <table width="100%">
+         <tr>
+             <td>ID</td>
+             <td>Titulo</td>
+             <td>Sinopsis</td>
+             <td>Foto</td>
+         </tr>
+         <?php 
+         require("../scripts/conexion.php"); 
+         require("../clases/Pelicula.php");
+         $p = new Pelicula($conData);
+         
+         $res = $p->consulta('0'); 
+         if($res['estado']!="OK" || $res['filas']==0){
+             echo "<tr><td colspan='4'>NO HAY RESULTADOS A MOSTRAR </td></tr>";
+         } else {
+             foreach($res['datos'] as $fila)
+             {
+                echo "<tr>"; 
+                echo "<td>" . $fila['idpeliculas']."</td>";
+                echo "<td>" . $fila['titulo']."</td>";
+                echo "<td>" . $fila['sinopsis']."</td>";                 
+                echo "<td><img src='" . $fila['ruta']."' width=200 height=200></td>"; 
+                echo "<tr>"; 
+             }
+         }
+         ?>
+     </table>
+     
     <script type="text/javascript">
         function recarga() {
             window.location.href="index.php";
