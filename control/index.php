@@ -39,12 +39,14 @@ if(isset($_GET['salir'])){
  
  <iframe name="peliculaFrame" style="display:none"> </iframe>
      <h4>Lista de peliculas</h4>
-     <table width="100%">
+     <table>
          <tr>
              <td>ID</td>
+             <td>Foto</td>
              <td>Titulo</td>
              <td>Sinopsis</td>
-             <td>Foto</td>
+             <td>Comentarios</td>
+             <td>Agregar</td>
          </tr>
          <?php 
          require("../scripts/conexion.php"); 
@@ -59,18 +61,57 @@ if(isset($_GET['salir'])){
              {
                 echo "<tr>"; 
                 echo "<td>" . $fila['idpeliculas']."</td>";
+                echo "<td><img src='" . $fila['ruta']."' width=120 height=100></td>";
                 echo "<td>" . $fila['titulo']."</td>";
                 echo "<td>" . $fila['sinopsis']."</td>";                 
-                echo "<td><img src='" . $fila['ruta']."' width=200 height=200></td>"; 
+                echo "<td>" . $fila['comentario']."</td>"; 
+                echo "<td><textarea id='comentario_".$fila['idpeliculas']."'></textarea><br><input type='button' onclick='javascript:addComentario(".$fila['idpeliculas'].")' value='Enviar'></td>"; 
                 echo "<tr>"; 
              }
          }
          ?>
      </table>
-     
+    <script src="../scripts/jquery-3.3.1.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         function recarga() {
             window.location.href="index.php";
+        }
+        
+        function addComentario(id){
+            obj = document.getElementById('comentario_'+id); 
+            if(obj.value==null)
+                {
+                    alert("El comentario esta vacio");
+                    obj.focus();
+                    return; 
+                }
+            var comentario = new Object(); 
+            comentario.id = id; 
+            comentario.comment = obj.value; 
+            json = JSON.stringify(comentario); 
+            // alert(json);
+             $.post(
+                            "http://localhost/curso_web/control/services/add.php",
+                            json, 
+                            function(responseText, status){
+                                try{
+                                    if(status == "success"){
+                                        console.log(responseText);
+                                        res = JSON.parse(responseText);
+                                        if(res.estado=="OK"){
+                                            console.warn("Login Success!");
+                                            alert("Comentario agregado");
+                                            recarga();                                     
+                                        }else {
+                                        alert(res.estado);
+                                        console.error("Status: " + res.estado);
+                                    }
+                                    } 
+                                }catch(e){
+                                    console.log("Error " + e);
+                                }
+                            }
+                        );
         }
     </script>
  </body>

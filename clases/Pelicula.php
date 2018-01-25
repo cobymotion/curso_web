@@ -48,5 +48,21 @@ class Pelicula {
         }
         return $R; 
     }
+    
+    function addComentario($id, $comenario){
+        $R['estado']= "OK"; 
+        try {
+            $conn = new PDO('mysql:host='.$this->host.';dbname='.$this->db,$this->user, $this->pass);
+            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $sql = $conn->prepare("UPDATE peliculas SET comentario=CONCAT(comentario,'#',:pcomentario) WHERE idpeliculas=:id");
+            $sql->execute(array('pcomentario'=>$comenario ,'id'=>$id));
+            
+            $conn = null; 
+        }catch(PDOException $e){
+            $R['estado'] = "Error: " . $e->getMessage(); 
+        }
+        return $R; 
+    }
+    
 }
 ?>
